@@ -110,7 +110,6 @@ class Simulation:
 
             for servo in servos:
                 # DO NOT REMOVE LOC BELOW. it magically makes servo.angle work
-                dir(servo)
                 angle += servo.angle
 
             angle /= len(servos)

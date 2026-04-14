@@ -1,4 +1,4 @@
-import code
+import sensors
 from secrets_db import *
 import analogio
 from node_config import *
@@ -29,14 +29,15 @@ elif board.board_id == "adafruit_funhouse":
     print("Using A0")
 elif board.board_id == "unexpectedmaker_feathers2":
     # _lm35_pin = analogio.AnalogIn(board.A3)
-    print("Using A3")
+    # print("Using A3")
+    pass
 else:
     _lm35_pin = None
 
 
 # Get a temperature reading from the LM35
 def lm35_temperature_c(id):
-    lm35 = code.zone_lm35s[id]
+    lm35 = sensors.zone_lm35s[id]
     adc = lm35.value
     v = adc * adc_to_V
     T = V_to_c * v

@@ -1,15 +1,9 @@
 import time
-import board
 import networking
 import secrets_db
 import node_config
 import temperature_measurement_node
 
-zone_lm35s = [
-    board.A0,
-    board.A1,
-    board.A3,
-]
 pre_functions = [
     networking.loop,
 ]
@@ -24,6 +18,7 @@ if secrets_db.node_type == node_config.NODE_TYPE_PRIMARY:
         iterations = round(elapsed_seconds * frequency)
 
         for _ in range(iterations):
+            print(dir(temperature_measurement_node))
             temperature_measurement_node.loop(1 / frequency)
 
     frequency = 10

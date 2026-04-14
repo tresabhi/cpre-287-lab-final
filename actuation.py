@@ -10,33 +10,7 @@ led_red = None
 
 # ------------Damper control-----------#
 # Parallax Standard Servo (https://www.parallax.com/product/parallax-standard-servo/)
-SERVO_ACTUATION_RANGE = 180  # degrees
-SERVO_MIN_PULSE = 750  # us, for PWM control
-SERVO_MAX_PULSE = 2250  # us, for PWM control
 
-SERVO_FREQUENCY = 50
-SERVO_MIN = 45
-SERVO_MAX = 135
-SERVO_RANGE = SERVO_MAX - SERVO_MIN
-
-
-zone_servos = [
-    [
-        #
-        pwmio.PWMOut(board.A0, frequency=SERVO_FREQUENCY)
-    ],
-    [
-        #
-        pwmio.PWMOut(board.A1, frequency=SERVO_FREQUENCY)
-    ],
-    [
-        pwmio.PWMOut(board.A2, frequency=SERVO_FREQUENCY),
-        pwmio.PWMOut(board.A3, frequency=SERVO_FREQUENCY),
-    ],
-]
-zone_servos = [
-    [adafruit_motor.servo.Servo(servo) for servo in servos] for servos in zone_servos
-]
 
 if node_type != NODE_TYPE_SIMULATED:
     # Damper initialization - use pins A0, A1, and A2 for zones 1, 2, and 3 respectively

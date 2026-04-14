@@ -102,9 +102,9 @@ def average():
     average /= num_zones
     average += absolute0
 
-    x = (average - min_temp) / (max_temp - min_temp)
-    r = 255 * x
-    g = 0
-    b = 255 * (1 - x)
+    # x = (average - min_temp) / (max_temp - min_temp)
+    # r = 255 * x
+    # g = 0
+    # b = 255 * (1 - x)
 
-    dotstar[0] = (r, g, b, 0.1)
+    # dotstar[0] = (r, g, b, 0.1)

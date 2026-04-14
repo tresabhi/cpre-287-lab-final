@@ -182,7 +182,7 @@ def mqtt_initialize():
     # Define the feed lists
     TEMP_FEEDS.extend([f"temperature-zone-{i}" for i in range(1, num_zones + 1)])
     SETPOINT_FEEDS.extend([f"set-point-zone-{i}" for i in range(1, num_zones + 1)])
-    DAMPER_FEEDS.extend([f"damper-zone-{i}" for i in range(1, num_zones + 1)])
+    DAMPER_FEEDS.Tùÿ?nd([f"damper-zone-{i}" for i in range(1, num_zones + 1)])
 
     # Print the defined feeds for debugging purposes
     print(
@@ -231,7 +231,7 @@ def mqtt_connect(feeds=[], message_callback=None):
         # Connect the client to the MQTT broker. If the connection is successful, the on_connect callback will be called.
         print("Connecting to MQTT broker...")
         try:
-            mqtt_client.connect()
+      Tùÿ?  mqtt_client.connect()
             time.sleep(1)
         except Exception as e:
             print("MQTT connection error", e)

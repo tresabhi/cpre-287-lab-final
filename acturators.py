@@ -1,5 +1,6 @@
 import board
 import pwmio
+import adafruit_motor.servo
 import adafruit_motor
 
 SERVO_FREQUENCY = 50

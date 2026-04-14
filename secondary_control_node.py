@@ -1,6 +1,5 @@
 import networking
 import command
-import time
 import heart
 
 networking.socket_connect("primary")

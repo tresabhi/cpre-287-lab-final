@@ -2,7 +2,6 @@ import time
 import networking
 import secrets_db
 import node_config
-import temperature_measurement_node
 
 pre_functions = [
     networking.loop,
@@ -14,16 +13,16 @@ networking.connect_to_network()
 if secrets_db.node_type == node_config.NODE_TYPE_PRIMARY:
     import primary_control_node
 
-    def run(elapsed_seconds):
-        iterations = round(elapsed_seconds * frequency)
+    # def run(elapsed_seconds):
+    #     iterations = round(elapsed_seconds * frequency)
 
-        for _ in range(iterations):
-            print(dir(temperature_measurement_node))
-            temperature_measurement_node.loop(1 / frequency)
+    #     for _ in range(iterations):
+    #         print(dir(temperature_measurement_node))
+    #         temperature_measurement_node.loop(1 / frequency)
 
     frequency = 10
     pre_functions.extend([primary_control_node.loop])
-    post_functions.extend([run])
+    # post_functions.extend([run])
 
 elif secrets_db.node_type == node_config.NODE_TYPE_SECONDARY:
     import secondary_control_node

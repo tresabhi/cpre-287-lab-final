@@ -11,7 +11,7 @@ kill_after_dead_beats = 9
 
 
 def listen():
-    print("heard beat")
+    # print("heard beat")
     global t0, dts, dt_average
 
     if t0 == None:
@@ -27,13 +27,13 @@ def listen():
 
 
 def beat():
-    print("sending beat")
+    # print("sending beat")
     beat_command = command.Command(type=command.TYPE_HEARTBEAT, values=[])
     networking.socket_send_message(beat_command)
 
 
 def loop():
-    print("listening for beats")
+    # print("listening for beats")
     global dt_average, t0
 
     if dt_average in [None, 0]:

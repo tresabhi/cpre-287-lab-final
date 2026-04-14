@@ -3,7 +3,6 @@ from secrets_db import *
 from node_config import num_zones, zone_k
 import time
 from utils import c_to_f
-import actuation
 from math import sin, pi
 
 # define some values?
@@ -83,6 +82,8 @@ class Simulation:
     last_t = 0
 
     def _update_temps(self, t):
+        import actuation
+
         dt = t - self.last_t
         t_days = t / 60 / 60 / 24 + 0.5
 
@@ -130,6 +131,8 @@ class Simulation:
             self.zone_temps[id] = sensing.lm35_temperature_c(id)
 
     def _update_dampers(self, t):
+        import actuation
+
         # for zone in range(num_zones):
         #     zone_temp = self.zone_temps[zone]
         #     cooling = min(1, max(0, zone_temp - TARGET_TEMP)) * 100
@@ -190,6 +193,8 @@ class Simulation:
 
     # Runs periodic simulation actions.
     def loop(self, dt):
+        import actuation
+
         # Calculate the amount of time elapsed since this last time this function was run. See CircuitPython's time module documentation
         # at http://docs.circuitpython.org/en/latest/shared-bindings/time/index.html. We recommend time.monotonic_ns(). Also note that
         # temperature_measurement_node.py has an elapsed time calculation, and you may be able to use a similar approach here.

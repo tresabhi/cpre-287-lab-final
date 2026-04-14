@@ -1,0 +1,48 @@
+import time
+import board
+import networking
+import secrets_db
+import node_config
+import temperature_measurement_node
+
+zone_lm35s = [
+    board.A0,
+    board.A1,
+    board.A3,
+]
+pre_functions = [
+    networking.loop,
+]
+post_functions = []
+
+networking.connect_to_network()
+
+if secrets_db.node_type == node_config.NODE_TYPE_PRIMARY:
+    import primary_control_node
+
+    def run(elapsed_seconds):
+        iterations = round(elapsed_seconds * frequency)
+
+        for _ in range(iterations):
+            temperature_measurement_node.loop(1 / frequency)
+
+    frequency = 10
+    pre_functions.extend([primary_control_node.loop])
+    post_functions.extend([run])
+
+elif secrets_db.node_type == node_config.NODE_TYPE_SECONDARY:
+    import secondary_control_node
+
+    pre_functions.extend([secondary_control_node.loop])
+
+while True:
+    start_time = start = time.time()
+
+    for f in pre_functions:
+        f()
+
+    end_time = start = time.time()
+    elapsed_seconds = end_time - start_time
+
+    for f in post_functions:
+        f(elapsed_seconds)

@@ -1,3 +1,4 @@
+import code
 from secrets_db import *
 import analogio
 from node_config import *
@@ -34,8 +35,9 @@ else:
 
 
 # Get a temperature reading from the LM35
-def lm35_temperature_c():
-    adc = _lm35_pin.value
+def lm35_temperature_c(id):
+    lm35 = code.zone_lm35s[id]
+    adc = lm35.value
     v = adc * adc_to_V
     T = V_to_c * v
 

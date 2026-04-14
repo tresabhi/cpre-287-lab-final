@@ -1,7 +1,7 @@
+import sensing
 from secrets_db import *
 from node_config import num_zones, zone_k
 import time
-import math
 from utils import c_to_f
 import actuation
 from math import sin, pi
@@ -127,7 +127,8 @@ class Simulation:
             # yay! units work out cleanly
             dT = dT_dt * dt
 
-            self.zone_temps[id] += dT
+            # self.zone_temps[id] += dT
+            self.zone_temps[id] = sensing.lm35_temperature_c(id)
 
     def _update_dampers(self, t):
         # for zone in range(num_zones):

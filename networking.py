@@ -285,7 +285,7 @@ def socket_connect(target):
 
     # Refresh the socket - seems to help sometimes
     global my_socket
-    print(f"Connecting to secondary control node {host} on port {TCP_PORT}...")
+    print(f"Connecting to {target} control node {host} on port {TCP_PORT}...")
 
     connected = False
     while not connected:

@@ -13,6 +13,7 @@ def listen(message):
     #     heart.listen()
 
 
+networking.connect_to_network()
 networking.socket_listen(listen)
 
 

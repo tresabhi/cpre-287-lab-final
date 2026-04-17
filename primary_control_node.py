@@ -20,8 +20,6 @@ INTEGRAL_SAMPLES = 150
 # TARGET_TEMP = 25
 TARGET_TEMP = 23.3333
 
-networking.socket_connect("secondary")
-
 
 def message_received(client, topic, message):
     for zone in range(node_config.num_zones):
@@ -34,6 +32,8 @@ def message_received(client, topic, message):
         pid(zone)
 
 
+networking.connect_to_network()
+networking.socket_connect("secondary")
 networking.mqtt_initialize()
 networking.mqtt_connect(
     [f"temperature-zone-{i + 1}" for i in range(node_config.num_zones)],

@@ -8,8 +8,6 @@ pre_functions = [
 ]
 post_functions = []
 
-networking.connect_to_network()
-
 if secrets_db.node_type == node_config.NODE_TYPE_PRIMARY:
     import primary_control_node
 

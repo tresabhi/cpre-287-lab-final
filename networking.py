@@ -371,7 +371,7 @@ def socket_send_message(msg):
 
     try:
         size = my_socket.send(msg)
-        # print("Sent " + str(size) + " bytes")
+        print("Sent " + str(size) + " bytes")
     except OSError as e:
         print("Error: message could not be send. Reconnecting")
         socket_connect(last_target)

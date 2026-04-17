@@ -20,6 +20,4 @@ zone_servos = [
 ]
 
 zone_servos = [pwmio.PWMOut(pin, frequency=SERVO_FREQUENCY) for pin in zone_servos]
-zone_servos = [
-    [adafruit_motor.servo.Servo(servo) for servo in servos] for servos in zone_servos
-]
+zone_servos = [adafruit_motor.servo.Servo(servo) for servo in zone_servos]

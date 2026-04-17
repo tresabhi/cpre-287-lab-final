@@ -1,9 +1,10 @@
+import random
+import actuation
 import time
 import networking
 import node_config
 import command
 import heart
-import sensors
 import utils
 
 adc_to_V = 2.57 / 51000
@@ -62,7 +63,10 @@ def read_lm35s():
         #     networking.TEMP_FEEDS[zone], round(T_f * 100) / 100
         # )
 
-        networking.mqtt_publish_message(networking.TEMP_FEEDS[zone], 85)
+        networking.mqtt_publish_message(
+            networking.TEMP_FEEDS[zone],
+            utils.c_to_f(TARGET_TEMP) + random.randint(-1, 1),
+        )
 
         # print(f"Zone {zone} temp (f): {T_f}")
         # print(f"Zone {zone} lm35: {adc}")
@@ -104,16 +108,17 @@ def pid():
             networking.DAMPER_FEEDS[zone], round(percentage)
         )
 
+        actuation.set_damper(zone, percentage)
+
     average_temp /= node_config.num_zones
     heating = average_temp < TARGET_TEMP
     cooling = average_temp > TARGET_TEMP
 
-    damper_command = command.Command(
+    heat_cool_command = command.Command(
         type=command.TYPE_HEAT_COOL, values=[f"{heating}" f"{cooling}"]
     )
 
-    networking.socket_send_message(damper_command)
-
+    # networking.socket_send_message(heat_cool_command)
     networking.mqtt_publish_message(networking.COOLING_FEED, f"{cooling}")
     networking.mqtt_publish_message(networking.HEATING_FEED, f"{heating}")
 

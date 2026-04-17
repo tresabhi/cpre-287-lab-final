@@ -19,15 +19,13 @@ if node_type != NODE_TYPE_SIMULATED:
 
 # Set the damper for the given zone to the given percent (0 means closed, 100 means fully open)
 def set_damper(zone, percent):
-    servos = acturators.zone_servos[zone]
+    servo = acturators.zone_servos[zone]
 
     x = percent / 100
     x = max(0, min(1, x))
 
     angle = acturators.SERVO_MIN + acturators.SERVO_RANGE * x
-
-    for servo in servos:
-        servo.angle = angle
+    servo.angle = angle
 
 
 # ------------End damper control-----------#

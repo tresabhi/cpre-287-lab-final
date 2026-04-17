@@ -194,7 +194,7 @@ def mqtt_initialize():
 
 
 # Connects to the MQTT broker (if needed) and subscribes to the list of feeds provided.
-# message_callback i¬ôÿ?e function that is called when a new message is received from a subbed feed.
+# message_callback iï¿½ï¿½ï¿½?e function that is called when a new message is received from a subbed feed.
 def mqtt_connect(feeds=[], message_callback=None):
     if not ENABLE_MQTT:
         print("MQTT connection not enabled in node_config.py")
@@ -244,7 +244,7 @@ def mqtt_connection_check():
     if not mqtt_client.is_connected():
         print("MQTT Disconnected, attempting reconnect")
         try:
-           ¬ôÿ?an_up()
+            clean_up()
             mqtt_client.reconnect()
             print("MQTT Reconnected")
             return True
@@ -295,7 +295,6 @@ def socket_connect(target):
             print("closed")
         my_socket = pool.socket()
         print("new")
-
 
         # CP's connect automatically temporarily sets the socket to blocking mode
         my_socket.setblocking(True)

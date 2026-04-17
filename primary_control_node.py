@@ -20,7 +20,7 @@ INTEGRAL_SAMPLES = 150
 # TARGET_TEMP = 25
 TARGET_TEMP = 23.3333
 
-# networking.socket_connect("secondary")
+networking.socket_connect("secondary")
 
 
 def message_received(client, topic, message):
@@ -31,7 +31,7 @@ def message_received(client, topic, message):
         temps[zone] = utils.f_to_c(float(message))
 
     if topic == f"temperature-zone-{node_config.num_zones + 1}":
-        pid()
+        pid(zone)
 
 
 networking.mqtt_initialize()
@@ -39,7 +39,6 @@ networking.mqtt_connect(
     [f"temperature-zone-{i + 1}" for i in range(node_config.num_zones)],
     message_received,
 )
-# networking.socket_connect("secondary")
 
 temps = [0, 0, 0]
 last_e = [0] * node_config.num_zones
@@ -118,7 +117,7 @@ def pid():
         type=command.TYPE_HEAT_COOL, values=[f"{heating}" f"{cooling}"]
     )
 
-    # networking.socket_send_message(heat_cool_command)
+    networking.socket_send_message(heat_cool_command)
     networking.mqtt_publish_message(networking.COOLING_FEED, f"{cooling}")
     networking.mqtt_publish_message(networking.HEATING_FEED, f"{heating}")
 
@@ -126,4 +125,4 @@ def pid():
 def loop():
     read_lm35s()
     pid()
-    heart.loop()
+    # heart.loop()+

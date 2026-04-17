@@ -2,9 +2,6 @@ import networking
 import command
 import heart
 
-networking.socket_connect("primary")
-
-
 def listen(message):
     [type, *arguments] = message.split(":")
     type = int(type)
@@ -12,6 +9,8 @@ def listen(message):
     if type == command.TYPE_HEARTBEAT:
         heart.listen()
 
+
+networking.socket_listen(listen)
 
 def loop():
     heart.beat()

@@ -23,7 +23,14 @@ TARGET_TEMP = 23.3333
 
 
 def message_received(client, topic, message):
-    pass
+    for zone in range(node_config.num_zones):
+        if topic != f"temperature-zone-{zone + 1}":
+            continue
+
+        temps[zone] = utils.f_to_c(float(message))
+
+    if topic == f"temperature-zone-{node_config.num_zones + 1}":
+        pid()
 
 
 networking.mqtt_initialize()
@@ -31,17 +38,7 @@ networking.mqtt_connect(
     [f"temperature-zone-{i + 1}" for i in range(node_config.num_zones)],
     message_received,
 )
-
-
-def listen(message):
-    [type, *arguments] = message.split(":")
-    type = int(type)
-
-    if type == command.TYPE_HEARTBEAT:
-        heart.listen()
-
-
-networking.socket_listen(listen)
+# networking.socket_connect("secondary")
 
 temps = [0, 0, 0]
 last_e = [0] * node_config.num_zones
@@ -53,17 +50,19 @@ def read_lm35s():
     global temps
 
     for zone in range(node_config.num_zones):
-        lm35 = sensors.zone_lm35s[zone]
-        adc = lm35.value
-        v = adc * adc_to_V
-        T = V_to_c * v
+        # lm35 = sensors.zone_lm35s[zone]
+        # adc = lm35.value
+        # v = adc * adc_to_V
+        # T = V_to_c * v
 
-        temps[zone] = T
+        # temps[zone] = T
 
-        T_f = utils.c_to_f(T)
-        networking.mqtt_publish_message(
-            networking.TEMP_FEEDS[zone], round(T_f * 100) / 100
-        )
+        # T_f = utils.c_to_f(T)
+        # networking.mqtt_publish_message(
+        #     networking.TEMP_FEEDS[zone], round(T_f * 100) / 100
+        # )
+
+        networking.mqtt_publish_message(networking.TEMP_FEEDS[zone], 85)
 
         # print(f"Zone {zone} temp (f): {T_f}")
         # print(f"Zone {zone} lm35: {adc}")
@@ -108,6 +107,12 @@ def pid():
     average_temp /= node_config.num_zones
     heating = average_temp < TARGET_TEMP
     cooling = average_temp > TARGET_TEMP
+
+    damper_command = command.Command(
+        type=command.TYPE_HEAT_COOL, values=[f"{heating}" f"{cooling}"]
+    )
+
+    networking.socket_send_message(damper_command)
 
     networking.mqtt_publish_message(networking.COOLING_FEED, f"{cooling}")
     networking.mqtt_publish_message(networking.HEATING_FEED, f"{heating}")

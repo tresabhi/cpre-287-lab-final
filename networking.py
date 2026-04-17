@@ -6,6 +6,8 @@ import gc
 # wifi and socketpool modules. This is the case if we are running a simulation on "desktop" Python.
 USE_BUILTIN_NETWORKING = False
 
+last_target = None
+
 try:
     import wifi
     import socketpool
@@ -276,7 +278,9 @@ socket_buffer = bytearray([0] * SOCKET_MESSAGE_MAX_LENGTH)
 
 # Connect to the secondary node over the network socket.
 def socket_connect(target):
+    global last_target
     host = SECONDARY_HOST if target is "secondary" else PRIMARY_HOST
+    last_target = target
 
     if node_type == NODE_TYPE_SIMULATED or not ENABLE_SOCKETS:
         # If we're simulating, there's nothing to do here.
@@ -349,6 +353,7 @@ def socket_listen(callback_function):
 
 # Send a message over the socket. msg is the message to be sent and should be a string.
 def socket_send_message(msg):
+    global last_target
     msg = f"{msg}|"
 
     if len(msg) > SOCKET_MESSAGE_MAX_LENGTH:
@@ -369,7 +374,7 @@ def socket_send_message(msg):
         # print("Sent " + str(size) + " bytes")
     except OSError as e:
         print("Error: message could not be send. Reconnecting")
-        socket_connect()
+        socket_connect(last_target)
 
 
 # Disconnect the socket. Might not actually get called since our application lives "forever."

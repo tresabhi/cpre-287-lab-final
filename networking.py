@@ -421,6 +421,7 @@ def loop():
         global connected_socket, my_socket, socket_buffer
         # Check for new socket connections.
         try:
+            print("Looking for connection")
             (new_conn, (remoteaddr, new_port)) = my_socket.accept()
             print("Connection from: " + str(remoteaddr))
 

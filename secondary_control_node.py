@@ -3,8 +3,12 @@ import command
 import heart
 import heaters_coolers
 
+test = True
+
 
 def listen(message):
+    global test
+
     [type, *arguments] = message.split(":")
     type = int(type)
 
@@ -14,10 +18,15 @@ def listen(message):
         heating = arguments[0]
         cooling = arguments[1]
 
-        print(f"heating = {heating}\tcooling = {cooling}")
+        # print(f"heating = {heating}\tcooling = {cooling}")
 
-        heaters_coolers.heating_pin.value = heating
-        heaters_coolers.cooling_pin.value = cooling
+        heaters_coolers.heating_pin.value = test
+        heaters_coolers.cooling_pin.value = not test
+        test = not test
+
+        print(
+            f"heating = {heaters_coolers.heating_pin.value}\tcooling = {heaters_coolers.cooling_pin.value}"
+        )
 
 
 networking.connect_to_network()

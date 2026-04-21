@@ -1,14 +1,10 @@
 import secrets_db
-import board
-import random
-import actuation
 import time
 import networking
 import node_config
 import command
 import heart
 import utils
-import analogio
 
 adc_to_V = 2.57 / 51000
 c_to_mV = 10
@@ -48,13 +44,13 @@ last_e = [0] * node_config.num_zones
 int_e = [[]] * node_config.num_zones
 last_t = 0
 
-lm35 = analogio.AnalogIn(board.A0)
-
 
 def read_lm35s():
-    global temps, lm35
+    import temp_sensor
 
-    adc = lm35.value
+    global temps
+
+    adc = temp_sensor.lm35.value
     v = adc * adc_to_V
     T = V_to_c * v
 
@@ -65,6 +61,8 @@ def read_lm35s():
 
 
 def pid():
+    import actuation
+
     global temps, last_e, last_t, int_e, K_p, K_i, K_d
 
     t = time.monotonic()

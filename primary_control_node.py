@@ -114,6 +114,8 @@ def pid():
     networking.mqtt_publish_message(networking.COOLING_FEED, f"{cooling}")
     networking.mqtt_publish_message(networking.HEATING_FEED, f"{heating}")
 
+    heart.beat()
+
 
 def loop():
     if secrets_db.node_type == node_config.NODE_TYPE_TEMPERATURE:

@@ -1,6 +1,6 @@
+import heart
 import networking
 import command
-import heart
 import heaters_coolers
 
 
@@ -20,6 +20,8 @@ def listen(message):
 
         heaters_coolers.heating_pin.value = heating
         heaters_coolers.cooling_pin.value = cooling
+    if type == command.TYPE_HEARTBEAT:
+        heart.listen()
 
 
 networking.connect_to_network()
@@ -27,5 +29,4 @@ networking.socket_listen(listen)
 
 
 def loop():
-    pass
-    # heart.beat()
+    heart.listen()

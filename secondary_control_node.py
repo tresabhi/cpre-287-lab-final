@@ -1,6 +1,7 @@
 import networking
 import command
 import heart
+import heaters_coolers
 
 
 def listen(message):
@@ -14,6 +15,9 @@ def listen(message):
         cooling = arguments[1]
 
         print(f"heating = {heating}\tcooling = {cooling}")
+
+        heaters_coolers.heating_pin.value = heating
+        heaters_coolers.cooling_pin.value = cooling
 
 
 networking.connect_to_network()

@@ -1,0 +1,1 @@
+add simulation and implement a way for the temperature nodes to simluate tmperature, keep in mind the nodes may onot be able to syncronoize the sim with aonther another so we mihgt have to use irl time

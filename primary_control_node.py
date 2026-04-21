@@ -1,3 +1,4 @@
+import secrets_db
 import board
 import random
 import actuation
@@ -53,26 +54,14 @@ lm35 = analogio.AnalogIn(board.A0)
 def read_lm35s():
     global temps, lm35
 
-    for zone in range(node_config.num_zones):
-        # lm35 = sensors.zone_lm35s[zone]
-        adc = lm35.value
-        v = adc * adc_to_V
-        T = V_to_c * v
+    adc = lm35.value
+    v = adc * adc_to_V
+    T = V_to_c * v
 
-        temps[zone] = T
-
-        T_f = utils.c_to_f(T)
-        networking.mqtt_publish_message(
-            networking.TEMP_FEEDS[zone], round(T_f * 100) / 100
-        )
-
-        # networking.mqtt_publish_message(
-        #     networking.TEMP_FEEDS[zone],
-        #     utils.c_to_f(TARGET_TEMP) + random.randint(-1, 1),
-        # )
-
-        # print(f"Zone {zone} temp (f): {T_f}")
-        # print(f"Zone {zone} lm35: {adc}")
+    T_f = utils.c_to_f(T)
+    networking.mqtt_publish_message(
+        networking.TEMP_FEEDS[secrets_db.zone_id], round(T_f * 100) / 100
+    )
 
 
 def pid():
@@ -127,9 +116,7 @@ def pid():
 
 
 def loop():
-    if board.board_id == "adafruit_funhouse":
+    if secrets_db.node_type == node_config.NODE_TYPE_TEMPERATURE:
         read_lm35s()
-    elif board.board_id == "unexpectedmaker_feathers2":
+    elif secrets_db.node_type == node_config.NODE_TYPE_PRIMARY:
         pid()
-    else:
-        raise NameError(f"Unknown board: {board.board_id}")

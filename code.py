@@ -8,7 +8,10 @@ pre_functions = [
 ]
 post_functions = []
 
-if secrets_db.node_type == node_config.NODE_TYPE_PRIMARY:
+if secrets_db.node_type in [
+    node_config.NODE_TYPE_PRIMARY,
+    node_config.NODE_TYPE_TEMPERATURE,
+]:
     import primary_control_node
 
     # def run(elapsed_seconds):

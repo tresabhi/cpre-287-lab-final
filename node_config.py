@@ -8,7 +8,6 @@ NODE_TYPE_TEMPERATURE = 3
 num_zones = 3
 
 # Zone that the node is located in, starting at 0. Only relevant for temp measurement nodes.
-zone_id = 0
 ENABLE_MQTT = True
 ENABLE_SOCKETS = True
 

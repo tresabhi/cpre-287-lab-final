@@ -13,8 +13,8 @@ def listen(message):
     print(message)
 
     if type == command.TYPE_HEAT_COOL:
-        heating = arguments[0]
-        cooling = arguments[1]
+        heating = arguments[0] == "True"
+        cooling = arguments[1] == "True"
 
         print(f"heating = {heating}\tcooling = {cooling}")
 

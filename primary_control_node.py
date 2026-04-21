@@ -1,3 +1,4 @@
+import board
 import random
 import actuation
 import time
@@ -6,6 +7,7 @@ import node_config
 import command
 import heart
 import utils
+import analogio
 
 adc_to_V = 2.57 / 51000
 c_to_mV = 10
@@ -45,27 +47,29 @@ last_e = [0] * node_config.num_zones
 int_e = [[]] * node_config.num_zones
 last_t = 0
 
+lm35 = analogio.AnalogIn(board.A0)
+
 
 def read_lm35s():
-    global temps
+    global temps, lm35
 
     for zone in range(node_config.num_zones):
         # lm35 = sensors.zone_lm35s[zone]
-        # adc = lm35.value
-        # v = adc * adc_to_V
-        # T = V_to_c * v
+        adc = lm35.value
+        v = adc * adc_to_V
+        T = V_to_c * v
 
-        # temps[zone] = T
+        temps[zone] = T
 
-        # T_f = utils.c_to_f(T)
-        # networking.mqtt_publish_message(
-        #     networking.TEMP_FEEDS[zone], round(T_f * 100) / 100
-        # )
-
+        T_f = utils.c_to_f(T)
         networking.mqtt_publish_message(
-            networking.TEMP_FEEDS[zone],
-            utils.c_to_f(TARGET_TEMP) + random.randint(-1, 1),
+            networking.TEMP_FEEDS[zone], round(T_f * 100) / 100
         )
+
+        # networking.mqtt_publish_message(
+        #     networking.TEMP_FEEDS[zone],
+        #     utils.c_to_f(TARGET_TEMP) + random.randint(-1, 1),
+        # )
 
         # print(f"Zone {zone} temp (f): {T_f}")
         # print(f"Zone {zone} lm35: {adc}")
@@ -123,6 +127,9 @@ def pid():
 
 
 def loop():
-    read_lm35s()
-    pid()
-    # heart.loop()+
+    if board.board_id == "adafruit_funhouse":
+        read_lm35s()
+    elif board.board_id == "unexpectedmaker_feathers2":
+        pid()
+    else:
+        raise NameError(f"Unknown board: {board.board_id}")

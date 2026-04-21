@@ -114,7 +114,7 @@ def pid():
     cooling = average_temp > TARGET_TEMP
 
     heat_cool_command = command.Command(
-        type=command.TYPE_HEAT_COOL, values=[f"{heating}" f"{cooling}"]
+        type=command.TYPE_HEAT_COOL, values=[f"{heating}", f"{cooling}"]
     )
 
     networking.socket_send_message(heat_cool_command)

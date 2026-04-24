@@ -23,11 +23,11 @@ target_temps = [25] * node_config.num_zones
 def message_received(client, topic, message):
     for zone in range(node_config.num_zones):
         if topic == f"temperature-zone-{zone + 1}":
-            print(f"Received temp for zone {zone}: {message}")
+            print(f"Received temp for zone {zone + 1}: {message}")
             temps[zone] = utils.f_to_c(float(message))
 
         if topic == f"set-point-zone-{zone + 1}":
-            print(f"Received set point for zone {zone}: {message}")
+            print(f"Received set point for zone {zone + 1}: {message}")
             target_temps[zone] = utils.f_to_c(float(message))
 
 
@@ -41,6 +41,7 @@ networking.mqtt_connect(
 )
 
 for zone in range(node_config.num_zones):
+    print(f"Defaulting zone {zone + 1} to {utils.c_to_f(DEFAULT_TEMP)} farenheit")
     networking.mqtt_publish_message(
         f"set-point-zone-{zone + 1}", utils.c_to_f(DEFAULT_TEMP)
     )

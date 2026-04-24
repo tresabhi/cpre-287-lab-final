@@ -19,8 +19,6 @@ INTEGRAL_SAMPLES = 150
 DEFAULT_TEMP = 25
 target_temps = [25] * node_config.num_zones
 
-def set_damper(zone, x):
-
 
 def command(type, arguments):
     import actuation

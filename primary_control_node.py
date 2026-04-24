@@ -36,10 +36,17 @@ def set_damper(zone, percent):
 def command(type, arguments):
     if type == "D":
         zone = int(arguments[0]) - 1
+
+        if zone not in list(range(node_config.num_zones)):
+            return
+
         percentage = float(arguments[1])
 
         set_damper(zone, percentage)
 
+
+for zone in range(node_config.num_zones):
+    set_damper(zone, 0)
 
 # def message_received(client, topic, message):
 #     for zone in range(node_config.num_zones):

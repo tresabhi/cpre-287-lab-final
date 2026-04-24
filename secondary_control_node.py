@@ -50,6 +50,10 @@ def command(type, arguments):
             set_coolers(False)
 
 
+set_heaters(False)
+set_coolers(False)
+set_fans(False)
+
 # def listen(message):
 #     global test
 

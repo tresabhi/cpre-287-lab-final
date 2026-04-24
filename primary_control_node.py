@@ -16,26 +16,28 @@ K_i = 2**-5
 K_d = 2**-4
 
 INTEGRAL_SAMPLES = 150
-# TARGET_TEMP = 25
-TARGET_TEMP = 23.3333
+target_temps = [25] * node_config.num_zones
 
 
 def message_received(client, topic, message):
     for zone in range(node_config.num_zones):
-        if topic != f"temperature-zone-{zone + 1}":
-            continue
+        if topic == f"temperature-zone-{zone + 1}":
+            print(f"Received temp for zone {zone}: {message}")
+            temps[zone] = utils.f_to_c(float(message))
 
-        temps[zone] = utils.f_to_c(float(message))
-
-    if topic == f"temperature-zone-{node_config.num_zones + 1}":
-        pid(zone)
+        if topic == f"set-point-zone-{zone + 1}":
+            print(f"Received set point for zone {zone}: {message}")
+            target_temps[zone] = float(message)
 
 
 networking.connect_to_network()
 networking.socket_connect("secondary")
 networking.mqtt_initialize()
 networking.mqtt_connect(
-    [f"temperature-zone-{i + 1}" for i in range(node_config.num_zones)],
+    [
+        *[f"temperature-zone-{i + 1}" for i in range(node_config.num_zones)],
+        *[f"set-point-zone-{i + 1}" for i in range(node_config.num_zones)],
+    ],
     message_received,
 )
 
@@ -76,10 +78,11 @@ def pid():
     average_temp = 0
 
     for zone in range(node_config.num_zones):
+        target_temp = target_temps[zone]
         zone_temp = temps[zone]
         average_temp += zone_temp
 
-        e = abs(TARGET_TEMP - zone_temp)
+        e = abs(target_temp - zone_temp)
         de = e - last_e[zone]
         last_e[zone] = e
 

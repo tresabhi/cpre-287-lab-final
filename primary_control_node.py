@@ -76,11 +76,14 @@ def pid():
     dt = t - last_t
     last_t = t
     average_temp = 0
+    t_error = 0
 
     for zone in range(node_config.num_zones):
         target_temp = target_temps[zone]
         zone_temp = temps[zone]
         average_temp += zone_temp
+
+        t_error += zone_temp - target_temp
 
         e = abs(target_temp - zone_temp)
         de = e - last_e[zone]
@@ -104,8 +107,8 @@ def pid():
         actuation.set_damper(zone, percentage)
 
     average_temp /= node_config.num_zones
-    heating = average_temp < TARGET_TEMP
-    cooling = average_temp > TARGET_TEMP
+    heating = t_error < 0
+    cooling = not heating
 
     heat_cool_command = command.Command(
         type=command.TYPE_HEAT_COOL, values=[f"{heating}", f"{cooling}"]

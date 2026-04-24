@@ -16,6 +16,7 @@ K_i = 2**-5
 K_d = 2**-4
 
 INTEGRAL_SAMPLES = 150
+DEFAULT_TEMP = 25
 target_temps = [25] * node_config.num_zones
 
 
@@ -38,6 +39,11 @@ networking.mqtt_connect(
     + [f"set-point-zone-{i + 1}" for i in range(node_config.num_zones)],
     message_received,
 )
+
+for zone in range(node_config.num_zones):
+    networking.mqtt_publish_message(
+        f"set-point-zone-{zone + 1}", utils.c_to_f(DEFAULT_TEMP)
+    )
 
 temps = [0, 0, 0]
 last_e = [0] * node_config.num_zones

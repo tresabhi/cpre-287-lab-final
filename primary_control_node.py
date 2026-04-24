@@ -34,10 +34,8 @@ networking.connect_to_network()
 networking.socket_connect("secondary")
 networking.mqtt_initialize()
 networking.mqtt_connect(
-    [
-        *[f"temperature-zone-{i + 1}" for i in range(node_config.num_zones)],
-        *[f"set-point-zone-{i + 1}" for i in range(node_config.num_zones)],
-    ],
+    [f"temperature-zone-{i + 1}" for i in range(node_config.num_zones)]
+    + [f"set-point-zone-{i + 1}" for i in range(node_config.num_zones)],
     message_received,
 )
 

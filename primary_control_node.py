@@ -19,9 +19,17 @@ INTEGRAL_SAMPLES = 150
 DEFAULT_TEMP = 25
 target_temps = [25] * node_config.num_zones
 
+def set_damper(zone, x):
+
 
 def command(type, arguments):
-    pass
+    import actuation
+
+    if type == "D":
+        zone = int(arguments[0]) - 1
+        percentage = float(arguments[1]) / 100
+
+        actuation.set_damper(zone, percentage)
 
 
 # def message_received(client, topic, message):

@@ -52,6 +52,7 @@ TEMP_FEEDS = []
 SETPOINT_FEEDS = []
 COOLING_FEED = "cooling"
 HEATING_FEED = "heating"
+FAN_FEED = "fan"
 COOLING_HEATING_FEED = "cooling-and-heating"
 DAMPER_FEEDS = []
 

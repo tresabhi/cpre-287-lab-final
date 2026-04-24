@@ -3,6 +3,9 @@ import networking
 import secrets_db
 import node_config
 
+networking.connect_to_network()
+networking.mqtt_initialize()
+
 pre_functions = [networking.loop]
 post_functions = []
 

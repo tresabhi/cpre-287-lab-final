@@ -8,26 +8,46 @@ def set_heaters(value):
     for pin in heaters_coolers.heating_pins:
         pin.value = value
 
+    networking.mqtt_publish_message(networking.HEATING_FEED, f"{value}")
+
 
 def set_coolers(value):
     for pin in heaters_coolers.cooling_pins:
         pin.value = value
+
+    networking.mqtt_publish_message(networking.COOLING_FEED, f"{value}")
 
 
 def set_fans(value):
     for pin in heaters_coolers.fan_pins:
         pin.value = value
 
+    networking.mqtt_publish_message(networking.FAN_FEED, f"{value}")
+
 
 def command(type, arguments):
+    value = arguments[0] == "1"
+
     if type == "H":
-        set_heaters(arguments[0] == "1")
-        set_coolers(arguments[0] != "1")
+        set_heaters(value)
+
+        if value:
+            set_fans(True)
+            set_coolers(False)
+
     elif type == "C":
-        set_coolers(arguments[0] == "1")
-        set_heaters(arguments[0] != "1")
+        set_coolers(value)
+
+        if value:
+            set_fans(True)
+            set_heaters(False)
+
     elif type == "F":
-        set_fans(arguments[0] == "1")
+        set_fans(value)
+
+        if not value:
+            set_heaters(False)
+            set_coolers(False)
 
 
 # def listen(message):

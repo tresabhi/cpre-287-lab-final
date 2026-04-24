@@ -22,10 +22,10 @@ target_temps = [25] * node_config.num_zones
 
 
 def set_damper(zone, percent):
-    servo = acturators.zone_servos[zone]
+    percent = max(0, min(100, percent))
 
+    servo = acturators.zone_servos[zone]
     x = percent / 100
-    x = max(0, min(1, x))
 
     angle = acturators.SERVO_MIN + acturators.SERVO_RANGE * x
     servo.angle = angle

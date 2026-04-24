@@ -27,7 +27,7 @@ def message_received(client, topic, message):
 
         if topic == f"set-point-zone-{zone + 1}":
             print(f"Received set point for zone {zone}: {message}")
-            target_temps[zone] = float(message)
+            target_temps[zone] = utils.f_to_c(float(message))
 
 
 networking.connect_to_network()

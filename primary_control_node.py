@@ -5,6 +5,7 @@ import node_config
 import command
 import heart
 import utils
+import acturators
 
 adc_to_V = 2.57 / 51000
 c_to_mV = 10
@@ -20,14 +21,24 @@ DEFAULT_TEMP = 25
 target_temps = [25] * node_config.num_zones
 
 
-def command(type, arguments):
-    import actuation
+def set_damper(zone, percent):
+    servo = acturators.zone_servos[zone]
 
+    x = percent / 100
+    x = max(0, min(1, x))
+
+    angle = acturators.SERVO_MIN + acturators.SERVO_RANGE * x
+    servo.angle = angle
+
+    networking.mqtt_publish_message(networking.DAMPER_FEEDS[zone], f"{percent}")
+
+
+def command(type, arguments):
     if type == "D":
         zone = int(arguments[0]) - 1
         percentage = float(arguments[1])
 
-        actuation.set_damper(zone, percentage)
+        set_damper(zone, percentage)
 
 
 # def message_received(client, topic, message):

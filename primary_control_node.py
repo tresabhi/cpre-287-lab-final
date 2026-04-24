@@ -25,7 +25,7 @@ def command(type, arguments):
 
     if type == "D":
         zone = int(arguments[0]) - 1
-        percentage = float(arguments[1]) / 100
+        percentage = float(arguments[1])
 
         actuation.set_damper(zone, percentage)
 

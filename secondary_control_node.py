@@ -69,8 +69,10 @@ def listen(message):
 
         print(f"heating = {heating}\tcooling = {cooling}")
 
-        heaters_coolers.heating_pin.value = heating
-        heaters_coolers.cooling_pin.value = cooling
+        set_heaters(heating)
+        set_coolers(cooling)
+        set_fans(True)
+
     if type == _command.TYPE_HEARTBEAT:
         heart.listen()
 

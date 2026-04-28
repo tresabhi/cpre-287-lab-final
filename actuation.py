@@ -27,6 +27,8 @@ def set_damper(zone, percent):
     angle = acturators.SERVO_MIN + acturators.SERVO_RANGE * x
     servo.angle = angle
 
+    return angle
+
 
 # ------------End damper control-----------#
 

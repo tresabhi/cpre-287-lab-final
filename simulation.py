@@ -47,6 +47,7 @@ class Simulation:
     t = 0
 
     xs = [0] * num_zones
+    percentages = [0] * num_zones
     angles = [0] * num_zones
 
     heating = False
@@ -108,14 +109,10 @@ class Simulation:
             T = self.zone_temps[id]
             k = zone_k[id]
 
-            angle = self.zone_servos[id]
+            # angle = self.zone_servos[id]
+            # x = (angle - acturators.SERVO_MIN) / acturators.SERVO_RANGE
 
-            x = (angle - acturators.SERVO_MIN) / acturators.SERVO_RANGE
-
-            self.angles[id] = angle
-            self.xs[id] = x
-
-            # print(x)
+            x = self.xs[id]
 
             # units for dT/dt = (1 / s) * kelvin = kelvin / s
             dT_dt = -k * (T - self.outside_temp) + ac_speed * x
@@ -162,10 +159,13 @@ class Simulation:
 
             u = self.K_p * e + self.K_i * int_e + self.K_d * de_dt
             u = min(1, max(0, u))
+            self.xs[zone] = u
 
             percentage = u * 100
+            self.percentages[zone] = percentage
 
-            actuation.set_damper(zone, percentage)
+            angle = actuation.set_damper(zone, percentage)
+            self.angles[zone] = angle
 
             zone_id += 1
 
@@ -214,7 +214,7 @@ class Simulation:
             debug += f"T{zone + 1}: {c_to_f(self.zone_temps[zone]):.3g}F \t"
         
         for zone in range(num_zones):
-            debug += f"X{zone + 1}: {self.xs[zone]:.0f}% \t\t"
+            debug += f"X{zone + 1}: {self.percentages[zone]:.0f}% \t"
 
         debug += f"H: {self.heating}\t"
         debug += f"C: {self.cooling}"

@@ -50,33 +50,35 @@ def command(type, arguments):
             set_coolers(False)
 
 
+
 set_heaters(False)
 set_coolers(False)
 set_fans(False)
 
-# def listen(message):
-#     global test
+def listen(message):
+    global test
 
-#     [type, *arguments] = message.split(":")
-#     type = int(type)
+    [type, *arguments] = message.split(":")
+    type = int(type)
 
-#     print(message)
+    print(message)
 
-#     if type == command.TYPE_HEAT_COOL:
-#         heating = arguments[0] == "True"
-#         cooling = arguments[1] == "True"
+    if type == command.TYPE_HEAT_COOL:
+        heating = arguments[0] == "True"
+        cooling = arguments[1] == "True"
 
-#         print(f"heating = {heating}\tcooling = {cooling}")
+        print(f"heating = {heating}\tcooling = {cooling}")
 
-#         heaters_coolers.heating_pin.value = heating
-#         heaters_coolers.cooling_pin.value = cooling
-#     if type == command.TYPE_HEARTBEAT:
-#         heart.listen()
-
-
-# networking.connect_to_network()
-# networking.socket_listen(listen)
+        heaters_coolers.heating_pin.value = heating
+        heaters_coolers.cooling_pin.value = cooling
+    if type == command.TYPE_HEARTBEAT:
+        heart.listen()
 
 
-# def loop():
-#     heart.loop()
+
+def auto():
+    networking.socket_listen(listen)
+
+
+def loop():
+    heart.loop()

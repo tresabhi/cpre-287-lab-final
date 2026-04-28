@@ -17,17 +17,21 @@ while is_manual:
     command = input("Manual input: ")
     [type, *arguments] = command.split(" ")
 
-    if secrets_db.node_type in [
-        node_config.NODE_TYPE_PRIMARY,
-        node_config.NODE_TYPE_TEMPERATURE,
-    ]:
-        import primary_control_node
+    try:
+        if secrets_db.node_type in [
+            node_config.NODE_TYPE_PRIMARY,
+            node_config.NODE_TYPE_TEMPERATURE,
+        ]:
+            import primary_control_node
 
-        primary_control_node.command(type, arguments)
-    else:
-        import secondary_control_node
+            primary_control_node.command(type, arguments)
+        else:
+            import secondary_control_node
 
-        secondary_control_node.command(type, arguments)
+            secondary_control_node.command(type, arguments)
+    except:
+        print("Invalid command")
+    
 
 # if secrets_db.node_type in [
 #     node_config.NODE_TYPE_PRIMARY,

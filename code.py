@@ -18,6 +18,7 @@ if secrets_db.node_type == node_config.NODE_TYPE_SIMULATED:
         last_t = t
 
         if dt > 0:
+            networking.loop()
             sim.loop(dt)
 
 else:

@@ -1,7 +1,8 @@
+import networking
 from secrets_db import *
 from node_config import num_zones, zone_k
 import time
-from utils import c_to_f
+from utils import c_to_f, f_to_c
 from math import sin, pi
 import acturators
 
@@ -19,12 +20,11 @@ TEMPERATURE_THRESHOLD = 2
 # k is the volume of the room divided by the surface area exposed to the outside
 # so we need to divide it by some constant to get a reasonable coefficient
 # for the derivative of the temperatures respect to time
-TARGET_TEMP = 25
+INITIAL_TARGET_TEMP = 25
 START_TEMP = TEMP_AVG
 
 # The Simulation(R)
 _sim = None
-
 
 # We only want ONE Simulation object, and we want to share it between all of the modules. We can accomplish this
 # using the singleton design pattern. This function is a key part of that pattern. It returns the singleton instance.
@@ -68,6 +68,25 @@ class Simulation:
             self.zone_temps[id] = START_TEMP
 
         self.zone_servos = [acturators.SERVO_MIN] * num_zones
+        self.target_temps = [INITIAL_TARGET_TEMP] * num_zones
+
+        networking.mqtt_connect(
+            [f"set-point-zone-{i + 1}" for i in range(node_config.num_zones)],
+            self.message_received,
+        )
+
+        for zone in range(node_config.num_zones):
+            print(f"Defaulting zone {zone + 1} to {c_to_f(INITIAL_TARGET_TEMP)} farenheit")
+            networking.mqtt_publish_message(
+                f"set-point-zone-{zone + 1}", c_to_f(INITIAL_TARGET_TEMP)
+            )
+
+    def message_received(self, client, topic, message):
+        print("received")
+        for zone in range(node_config.num_zones):
+            if topic == f"set-point-zone-{zone + 1}":
+                print(f"Received set point for zone {zone + 1}: {message}")
+                self.target_temps[zone] = f_to_c(float(message))
 
     # Returns the current temperature in the zone specified by zone_id
     def get_temperature_f(self, zone_id):
@@ -136,6 +155,8 @@ class Simulation:
 
         zone_id = 0
         average_temp = 0
+        t_error = 0
+
 
         for zone in range(num_zones):
             zone_temp = self.zone_temps[zone]
@@ -146,7 +167,8 @@ class Simulation:
             # percentage = min(1, max(0, percentage))
             # percentage *= 100
 
-            e = abs(TARGET_TEMP - zone_temp)
+            target_temp = self.target_temps[zone]
+            e = abs(target_temp - zone_temp)
             de = e - self.last_e[zone]
             self.last_e[zone] = e
 
@@ -167,12 +189,13 @@ class Simulation:
             angle = actuation.set_damper(zone, percentage)
             self.angles[zone] = angle
 
+            t_error += zone_temp - target_temp
+
             zone_id += 1
 
         average_temp /= num_zones
-
-        self.heating = average_temp < TARGET_TEMP
-        self.cooling = average_temp > TARGET_TEMP
+        self.heating = t_error < 0
+        self.cooling = not self.heating
 
         # if self.heating:
         #     # heater is already on; keep it on till we go well over the target temperature

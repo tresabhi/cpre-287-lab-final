@@ -44,7 +44,7 @@ def loop():
 
     if expected_heartbeats >= kill_after_dead_beats:
         print(
-            f"Killing entire process because {kill_after_dead_beats} beats were expected by now expectations"
+            f"Killing entire process because {kill_after_dead_beats} beats were expected by now"
         )
         sys.exit(1)
     elif expected_heartbeats >= max_dropped_heatbeats:

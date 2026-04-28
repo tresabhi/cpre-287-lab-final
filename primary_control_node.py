@@ -2,7 +2,7 @@ import secrets_db
 import time
 import networking
 import node_config
-import command
+import command as _command
 import heart
 import utils
 import acturators
@@ -139,8 +139,8 @@ def pid():
     heating = t_error < 0
     cooling = not heating
 
-    heat_cool_command = command.Command(
-        type=command.TYPE_HEAT_COOL, values=[f"{heating}", f"{cooling}"]
+    heat_cool_command = _command.Command(
+        type=_command.TYPE_HEAT_COOL, values=[f"{heating}", f"{cooling}"]
     )
 
     networking.socket_send_message(heat_cool_command)

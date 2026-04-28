@@ -255,3 +255,4 @@ class Simulation:
             networking.mqtt_publish_message(f"damper-zone-{zone + 1}", percent)
             networking.mqtt_publish_message(networking.COOLING_FEED, f"{self.cooling}")
             networking.mqtt_publish_message(networking.HEATING_FEED, f"{self.heating}")
+            networking.mqtt_publish_message(networking.FAN_FEED, f"True")

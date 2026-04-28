@@ -1,9 +1,9 @@
-import sensing
 from secrets_db import *
 from node_config import num_zones, zone_k
 import time
 from utils import c_to_f
 from math import sin, pi
+import acturators
 
 # define some values?
 
@@ -66,6 +66,8 @@ class Simulation:
         for id in range(num_zones):
             self.zone_temps[id] = START_TEMP
 
+        self.zone_servos = [acturators.SERVO_MIN] * num_zones
+
     # Returns the current temperature in the zone specified by zone_id
     def get_temperature_f(self, zone_id):
         # implement
@@ -106,15 +108,9 @@ class Simulation:
             T = self.zone_temps[id]
             k = zone_k[id]
 
-            servos = actuation.zone_servos[id]
-            angle = 0
+            angle = self.zone_servos[id]
 
-            for servo in servos:
-                # DO NOT REMOVE LOC BELOW. it magically makes servo.angle work
-                angle += servo.angle
-
-            angle /= len(servos)
-            x = (angle - actuation.SERVO_MIN) / actuation.SERVO_RANGE
+            x = (angle - acturators.SERVO_MIN) / acturators.SERVO_RANGE
 
             self.angles[id] = angle
             self.xs[id] = x
@@ -127,8 +123,8 @@ class Simulation:
             # yay! units work out cleanly
             dT = dT_dt * dt
 
-            # self.zone_temps[id] += dT
-            self.zone_temps[id] = sensing.lm35_temperature_c(id)
+            self.zone_temps[id] += dT
+            # self.zone_temps[id] = sensing.lm35_temperature_c(id)
 
     def _update_dampers(self, t):
         import actuation
@@ -209,3 +205,18 @@ class Simulation:
 
         actuation.set_heating(self.heating)
         actuation.set_cooling(self.cooling)
+
+        debug = ""
+
+        debug += f"Out: {c_to_f(self.outside_temp):.3g}F \t"
+
+        for zone in range(num_zones):
+            debug += f"T{zone + 1}: {c_to_f(self.zone_temps[zone]):.3g}F \t"
+        
+        for zone in range(num_zones):
+            debug += f"X{zone + 1}: {self.xs[zone]:.0f}% \t\t"
+
+        debug += f"H: {self.heating}\t"
+        debug += f"C: {self.cooling}"
+
+        print(debug)

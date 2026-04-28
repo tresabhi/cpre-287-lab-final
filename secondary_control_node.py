@@ -1,6 +1,6 @@
 import heart
 import networking
-import command
+import command as _command
 import heaters_coolers
 
 
@@ -63,7 +63,7 @@ def listen(message):
 
     print(message)
 
-    if type == command.TYPE_HEAT_COOL:
+    if type == _command.TYPE_HEAT_COOL:
         heating = arguments[0] == "True"
         cooling = arguments[1] == "True"
 
@@ -71,7 +71,7 @@ def listen(message):
 
         heaters_coolers.heating_pin.value = heating
         heaters_coolers.cooling_pin.value = cooling
-    if type == command.TYPE_HEARTBEAT:
+    if type == _command.TYPE_HEARTBEAT:
         heart.listen()
 
 

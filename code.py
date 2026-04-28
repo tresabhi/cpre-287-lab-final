@@ -10,16 +10,21 @@ if secrets_db.node_type == node_config.NODE_TYPE_SIMULATED:
     import simulation
 
     sim = simulation.Simulation(node_config.num_zones)
-    last_t = time.monotonic()
+    f = 10
 
     while True:
-        t = time.monotonic()
-        dt = t - last_t
-        last_t = t
+        t0 = time.monotonic()
+        networking.loop()
+        sim.publish()
+        t1 = time.monotonic()
+        dt = t1 - t0
 
-        if dt > 0:
-            networking.loop()
-            sim.loop(dt)
+        loops = round(f * dt)
+
+        i = 0
+        while i < loops:
+            sim.loop(1 / f)
+            i += 1
 
 else:
     pre_functions = [networking.loop]

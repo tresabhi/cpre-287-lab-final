@@ -71,6 +71,8 @@ class Simulation:
         self.target_temps = [INITIAL_TARGET_TEMP] * num_zones
 
         networking.mqtt_connect(
+            # [f"temperature-zone-{i + 1}" for i in range(node_config.num_zones)]
+            # + [f"damper-zone-{i + 1}" for i in range(node_config.num_zones)]
             [f"set-point-zone-{i + 1}" for i in range(node_config.num_zones)],
             self.message_received,
         )
@@ -239,7 +241,17 @@ class Simulation:
         for zone in range(num_zones):
             debug += f"X{zone + 1}: {self.percentages[zone]:.0f}% \t"
 
-        debug += f"H: {self.heating}\t"
+        debug += f"H: {self.heating} \t"
         debug += f"C: {self.cooling}"
 
         print(debug)
+
+    def publish(self):
+        for zone in range(num_zones):
+            temp = self.zone_temps[zone]
+            percent = self.percentages[zone]
+
+            networking.mqtt_publish_message(f"temperature-zone-{zone + 1}", c_to_f(temp))
+            networking.mqtt_publish_message(f"damper-zone-{zone + 1}", percent)
+            networking.mqtt_publish_message(networking.COOLING_FEED, f"{self.cooling}")
+            networking.mqtt_publish_message(networking.HEATING_FEED, f"{self.heating}")

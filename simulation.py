@@ -17,6 +17,8 @@ INTEGRAL_SAMPLES = 150
 
 TEMPERATURE_THRESHOLD = 2
 
+OUTSIDE_TEMP = f_to_c(65)
+
 # k is the volume of the room divided by the surface area exposed to the outside
 # so we need to divide it by some constant to get a reasonable coefficient
 # for the derivative of the temperatures respect to time
@@ -25,6 +27,7 @@ START_TEMP = TEMP_AVG
 
 # The Simulation(R)
 _sim = None
+
 
 # We only want ONE Simulation object, and we want to share it between all of the modules. We can accomplish this
 # using the singleton design pattern. This function is a key part of that pattern. It returns the singleton instance.
@@ -78,7 +81,9 @@ class Simulation:
         )
 
         for zone in range(node_config.num_zones):
-            print(f"Defaulting zone {zone + 1} to {c_to_f(INITIAL_TARGET_TEMP)} farenheit")
+            print(
+                f"Defaulting zone {zone + 1} to {c_to_f(INITIAL_TARGET_TEMP)} farenheit"
+            )
             networking.mqtt_publish_message(
                 f"set-point-zone-{zone + 1}", c_to_f(INITIAL_TARGET_TEMP)
             )
@@ -115,7 +120,7 @@ class Simulation:
             return
 
         self.last_t = t
-        self.outside_temp = TEMP_RANGE * sin(2 * pi * (t_days - 0.25)) + TEMP_AVG
+        self.outside_temp = OUTSIDE_TEMP
 
         ac_speed = 0
 
@@ -158,7 +163,6 @@ class Simulation:
         zone_id = 0
         average_temp = 0
         t_error = 0
-
 
         for zone in range(num_zones):
             zone_temp = self.zone_temps[zone]
@@ -237,7 +241,7 @@ class Simulation:
 
         for zone in range(num_zones):
             debug += f"T{zone + 1}: {c_to_f(self.zone_temps[zone]):.3g}F \t"
-        
+
         for zone in range(num_zones):
             debug += f"X{zone + 1}: {self.percentages[zone]:.0f}% \t"
 
@@ -251,7 +255,9 @@ class Simulation:
             temp = self.zone_temps[zone]
             percent = self.percentages[zone]
 
-            networking.mqtt_publish_message(f"temperature-zone-{zone + 1}", c_to_f(temp))
+            networking.mqtt_publish_message(
+                f"temperature-zone-{zone + 1}", c_to_f(temp)
+            )
             networking.mqtt_publish_message(f"damper-zone-{zone + 1}", percent)
             networking.mqtt_publish_message(networking.COOLING_FEED, f"{self.cooling}")
             networking.mqtt_publish_message(networking.HEATING_FEED, f"{self.heating}")

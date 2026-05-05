@@ -161,6 +161,7 @@ class Simulation:
         #     self.set_damper("cooling", zone, cooling)
         #     self.set_damper("heating", zone, heating)
 
+        zone_id = 0
         average_temp = 0
         t_error = 0
 
@@ -185,29 +186,23 @@ class Simulation:
             self.int_e[zone] += [e * dt]
             int_e = sum(self.int_e[zone])
 
-            x = self.K_p * e + self.K_i * int_e + self.K_d * de_dt
-            x = min(1, max(0, x))
+            u = self.K_p * e + self.K_i * int_e + self.K_d * de_dt
+            u = min(1, max(0, u))
+            self.xs[zone] = u
 
-            self.xs[zone] = x
-
-            t_error += zone_temp - target_temp
-
-        average_temp /= num_zones
-        self.heating = t_error < 0
-        self.cooling = not self.heating
-
-        for zone in range(num_zones):
-            if self.heating and zone_temp > target_temp:
-                self.xs[zone] = 0
-
-            if self.cooling and zone_temp < target_temp:
-                self.xs[zone] = 0
-
-            percentage = self.xs[zone] * 100
+            percentage = u * 100
             self.percentages[zone] = percentage
 
             angle = actuation.set_damper(zone, percentage)
             self.angles[zone] = angle
+
+            t_error += zone_temp - target_temp
+
+            zone_id += 1
+
+        average_temp /= num_zones
+        self.heating = t_error < 0
+        self.cooling = not self.heating
 
         # if self.heating:
         #     # heater is already on; keep it on till we go well over the target temperature

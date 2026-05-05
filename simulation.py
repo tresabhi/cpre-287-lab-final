@@ -23,7 +23,7 @@ OUTSIDE_TEMP = f_to_c(65)
 # so we need to divide it by some constant to get a reasonable coefficient
 # for the derivative of the temperatures respect to time
 INITIAL_TARGET_TEMP = 25
-START_TEMP = TEMP_AVG
+START_TEMP = f_to_c(70)
 
 # The Simulation(R)
 _sim = None
@@ -122,18 +122,17 @@ class Simulation:
         self.last_t = t
         self.outside_temp = OUTSIDE_TEMP
 
-        ac_speed = 0
+        T_HC = 0
 
         if self.heating:
-            ac_speed += 1
+            T_HC = f_to_c(100)
 
         if self.cooling:
-            ac_speed -= 1
+            T_HC = f_to_c(55)
 
         # Update all temps
         for id in range(num_zones):
             T = self.zone_temps[id]
-            k = zone_k[id]
 
             # angle = self.zone_servos[id]
             # x = (angle - acturators.SERVO_MIN) / acturators.SERVO_RANGE
@@ -141,7 +140,9 @@ class Simulation:
             x = self.xs[id]
 
             # units for dT/dt = (1 / s) * kelvin = kelvin / s
-            dT_dt = -k * (T - self.outside_temp) + ac_speed * x
+            dT_dt_a = -0.01 * (T - self.outside_temp)
+            dT_dt_hvac = -0.1 * x * (T - T_HC)
+            dT_dt = dT_dt_a + dT_dt_hvac
             # units for dT = kelvin / s * s = kelvin
             # yay! units work out cleanly
             dT = dT_dt * dt

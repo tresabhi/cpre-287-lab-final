@@ -113,7 +113,8 @@ mqtt_client = MQTT.MQTT(
     port=secrets["port"],
     # username=secrets["aio_username"],
     # password=secrets["aio_key"],
-    socket_pool=pool,
+    # socket_pool=pool,
+    socket_pool=None,
     # ssl_context=ssl.create_default_context(),
 )
 

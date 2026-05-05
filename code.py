@@ -78,6 +78,6 @@ else:
                     import secondary_control_node
 
                     secondary_control_node.command(type, arguments)
-            except:
+            except Exception as e:
                 print("Invalid command")
-        
+                print(e)

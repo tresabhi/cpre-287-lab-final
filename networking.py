@@ -423,7 +423,7 @@ def loop():
         # Check for new socket connections.
         try:
             print("Looking for connection")
-            (new_conn, (remoteaddr, new_port)) = my_socket.accept()
+            new_conn, (remoteaddr, new_port) = my_socket.accept()
             print("Connection from: " + str(remoteaddr))
 
             # If we already had a socket connection, close the old one

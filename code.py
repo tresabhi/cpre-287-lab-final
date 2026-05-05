@@ -37,10 +37,7 @@ else:
         [type, *arguments] = command.split(" ")
 
         if type == "auto":
-            if secrets_db.node_type in [
-                node_config.NODE_TYPE_PRIMARY,
-                node_config.NODE_TYPE_TEMPERATURE,
-            ]:
+            if secrets_db.node_type is node_config.NODE_TYPE_PRIMARY:
                 import primary_control_node
 
                 primary_control_node.auto()
@@ -52,6 +49,12 @@ else:
 
                 secondary_control_node.auto()
                 pre_functions.extend([secondary_control_node.loop])
+
+            elif secrets_db.node_type == node_config.NODE_TYPE_TEMPERATURE:
+                import temperature_measurement_node
+
+                temperature_measurement_node.auto()
+                pre_functions.extend([temperature_measurement_node.loop])
 
             while True:
                 start_time = start = time.time()
@@ -67,17 +70,19 @@ else:
 
         else:
             try:
-                if secrets_db.node_type in [
-                    node_config.NODE_TYPE_PRIMARY,
-                    node_config.NODE_TYPE_TEMPERATURE,
-                ]:
+                if secrets_db.node_type is node_config.NODE_TYPE_PRIMARY:
                     import primary_control_node
 
                     primary_control_node.command(type, arguments)
-                else:
+                elif secrets_db.node_type is node_config.NODE_TYPE_SECONDARY:
                     import secondary_control_node
 
                     secondary_control_node.command(type, arguments)
+                elif secrets_db.node_type is node_config.NODE_TYPE_TEMPERATURE:
+                    import temperature_measurement_node
+
+                    temperature_measurement_node.command(type, arguments)
+
             except Exception as e:
                 print("Invalid command")
                 print(e)

@@ -1,4 +1,3 @@
-import secrets_db
 import time
 import networking
 import node_config
@@ -6,11 +5,6 @@ import command as _command
 import heart
 import utils
 import acturators
-
-adc_to_V = 2.57 / 51000
-c_to_mV = 10
-c_to_V = c_to_mV / 1000
-V_to_c = 1 / c_to_V
 
 K_p = 2**-1
 K_i = 2**-5
@@ -24,6 +18,7 @@ temps = [0, 0, 0]
 last_e = [0] * node_config.num_zones
 int_e = [[]] * node_config.num_zones
 last_t = 0
+
 
 def set_damper(zone, percent):
     percent = max(0, min(100, percent))
@@ -70,25 +65,11 @@ def auto():
 
     for zone in range(node_config.num_zones):
         set_damper(zone, 0)
-        
+
         print(f"Defaulting zone {zone + 1} to {utils.c_to_f(DEFAULT_TEMP)} farenheit")
         networking.mqtt_publish_message(
             f"set-point-zone-{zone + 1}", utils.c_to_f(DEFAULT_TEMP)
         )
-
-def read_lm35s():
-    import temp_sensor
-
-    global temps
-
-    adc = temp_sensor.lm35.value
-    v = adc * adc_to_V
-    T = V_to_c * v
-
-    T_f = utils.c_to_f(T)
-    networking.mqtt_publish_message(
-        networking.TEMP_FEEDS[secrets_db.zone_id], round(T_f * 100) / 100
-    )
 
 
 def pid():
@@ -151,7 +132,4 @@ def pid():
 
 
 def loop():
-    if secrets_db.node_type == node_config.NODE_TYPE_TEMPERATURE:
-        read_lm35s()
-    elif secrets_db.node_type == node_config.NODE_TYPE_PRIMARY:
-        pid()
+    pid()

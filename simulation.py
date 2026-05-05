@@ -22,8 +22,8 @@ OUTSIDE_TEMP = f_to_c(65)
 # k is the volume of the room divided by the surface area exposed to the outside
 # so we need to divide it by some constant to get a reasonable coefficient
 # for the derivative of the temperatures respect to time
-INITIAL_TARGET_TEMP = 25
 START_TEMP = f_to_c(70)
+INITIAL_TARGET_TEMP = START_TEMP
 
 # The Simulation(R)
 _sim = None

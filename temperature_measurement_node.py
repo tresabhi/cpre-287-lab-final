@@ -18,6 +18,7 @@ def read_lm35s():
     T = V_to_c * v
 
     T_f = utils.c_to_f(T)
+    print(f"Temperature (zone {secrets_db.zone_id}): {T_f} fahrenheit")
     networking.mqtt_publish_message(
         networking.TEMP_FEEDS[secrets_db.zone_id], round(T_f * 100) / 100
     )

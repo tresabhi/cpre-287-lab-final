@@ -188,6 +188,13 @@ class Simulation:
 
             u = self.K_p * e + self.K_i * int_e + self.K_d * de_dt
             u = min(1, max(0, u))
+
+            if self.heating and zone_temp > target_temp:
+                u = 0
+
+            if self.cooling and zone_temp < target_temp:
+                u = 0
+
             self.xs[zone] = u
 
             percentage = u * 100

@@ -33,11 +33,15 @@ else:
     print("You are in manual mode")
 
     while True:
-        command = (
-            None
-            if secrets_db.node_type is node_config.NODE_TYPE_TEMPERATURE
-            else input("Manual input: ")
-        )
+        if secrets_db.node_type == node_config.NODE_TYPE_TEMPERATURE:
+            import temperature_measurement_node
+
+            temperature_measurement_node.auto()
+            pre_functions.extend([temperature_measurement_node.loop])
+
+            break
+
+        command = input("Manual input: ")
         [type, *arguments] = command.split(" ")
 
         if type is "auto" or secrets_db.node_type is node_config.NODE_TYPE_TEMPERATURE:
@@ -47,32 +51,15 @@ else:
                 primary_control_node.auto()
                 frequency = 10
                 pre_functions.extend([primary_control_node.loop])
+                break
 
             elif secrets_db.node_type is node_config.NODE_TYPE_SECONDARY:
                 import secondary_control_node
 
                 secondary_control_node.auto()
                 pre_functions.extend([secondary_control_node.loop])
+                break
 
-            elif secrets_db.node_type is node_config.NODE_TYPE_TEMPERATURE:
-                import temperature_measurement_node
-
-                temperature_measurement_node.auto()
-                pre_functions.extend([temperature_measurement_node.loop])
-
-            while True:
-                start_time = start = time.time()
-
-                for f in pre_functions:
-                    f()
-
-                end_time = start = time.time()
-                elapsed_seconds = end_time - start_time
-
-                for f in post_functions:
-                    f(elapsed_seconds)
-
-        else:
             try:
                 if secrets_db.node_type is node_config.NODE_TYPE_PRIMARY:
                     import primary_control_node
@@ -90,3 +77,15 @@ else:
             except Exception as e:
                 print("Invalid command")
                 print(e)
+
+    while True:
+        start_time = start = time.time()
+
+        for f in pre_functions:
+            f()
+
+        end_time = start = time.time()
+        elapsed_seconds = end_time - start_time
+
+        for f in post_functions:
+            f(elapsed_seconds)

@@ -1,3 +1,4 @@
+import time
 import secrets_db
 import networking
 import utils
@@ -26,6 +27,7 @@ def read_lm35s():
 
 def loop():
     read_lm35s()
+    time.sleep(2.5)
 
 
 def auto():

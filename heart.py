@@ -33,7 +33,7 @@ def beat():
 
 
 def loop():
-    print("listening for beats")
+    # print("listening for beats")
     global dt_average, t0
 
     if dt_average in [None, 0]:

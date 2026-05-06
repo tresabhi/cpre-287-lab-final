@@ -14,7 +14,7 @@ INTEGRAL_SAMPLES = 150
 DEFAULT_TEMP = utils.f_to_c(70)
 target_temps = [DEFAULT_TEMP] * node_config.num_zones
 
-temps = [0, 0, 0]
+temps = [DEFAULT_TEMP] * node_config.num_zones
 last_e = [0] * node_config.num_zones
 int_e = [[]] * node_config.num_zones
 last_t = 0
@@ -25,6 +25,7 @@ def set_damper(zone, percent):
 
     servo = acturators.zone_servos[zone]
     x = percent / 100
+    x = 1 - x
 
     angle = acturators.SERVO_MIN + acturators.SERVO_RANGE * x
     servo.angle = angle
@@ -87,6 +88,9 @@ def pid():
     last_t = t
     average_temp = 0
     t_error = 0
+
+    if dt == 0:
+        return
 
     for zone in range(node_config.num_zones):
         target_temp = target_temps[zone]

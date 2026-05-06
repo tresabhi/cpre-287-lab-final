@@ -129,7 +129,7 @@ def pid():
             networking.DAMPER_FEEDS[zone], round(percentage)
         )
 
-        actuation.set_damper(zone, percentage)
+        set_damper(zone, percentage)
 
     average_temp /= node_config.num_zones
     heating = t_error < 0

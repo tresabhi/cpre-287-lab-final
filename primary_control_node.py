@@ -25,9 +25,20 @@ def set_damper(zone, percent):
 
     servo = acturators.zone_servos[zone]
     x = percent / 100
-    x = 1 - x
+    _min = acturators.SERVO_MIN
+    _range = acturators.SERVO_RANGE
 
-    angle = acturators.SERVO_MIN + acturators.SERVO_RANGE * x
+    if zone == 0:
+        _min = 35
+        _range = 100
+        x = 1 - x
+
+    if zone == 2:
+        _min = 35
+        _range = 100
+        x = 1 - x
+
+    angle = _min + _range * x
     servo.angle = angle
 
     networking.mqtt_publish_message(networking.DAMPER_FEEDS[zone], f"{percent}")

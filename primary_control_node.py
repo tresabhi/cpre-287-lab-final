@@ -10,7 +10,7 @@ K_p = 2**-1
 K_i = 2**-5
 K_d = 2**-4
 
-INTEGRAL_SAMPLES = 4
+INTEGRAL_SAMPLES = 16
 DEFAULT_TEMP = utils.f_to_c(70)
 target_temps = [DEFAULT_TEMP] * node_config.num_zones
 

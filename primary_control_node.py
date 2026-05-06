@@ -11,8 +11,8 @@ K_i = 2**-5
 K_d = 2**-4
 
 INTEGRAL_SAMPLES = 150
-DEFAULT_TEMP = 25
-target_temps = [25] * node_config.num_zones
+DEFAULT_TEMP = utils.f_to_c(70)
+target_temps = [DEFAULT_TEMP] * node_config.num_zones
 
 temps = [0, 0, 0]
 last_e = [0] * node_config.num_zones

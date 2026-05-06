@@ -60,23 +60,23 @@ else:
                 pre_functions.extend([secondary_control_node.loop])
                 break
 
-            try:
-                if secrets_db.node_type is node_config.NODE_TYPE_PRIMARY:
-                    import primary_control_node
+        try:
+            if secrets_db.node_type is node_config.NODE_TYPE_PRIMARY:
+                import primary_control_node
 
-                    primary_control_node.command(type, arguments)
-                elif secrets_db.node_type is node_config.NODE_TYPE_SECONDARY:
-                    import secondary_control_node
+                primary_control_node.command(type, arguments)
+            elif secrets_db.node_type is node_config.NODE_TYPE_SECONDARY:
+                import secondary_control_node
 
-                    secondary_control_node.command(type, arguments)
-                elif secrets_db.node_type is node_config.NODE_TYPE_TEMPERATURE:
-                    import temperature_measurement_node
+                secondary_control_node.command(type, arguments)
+            elif secrets_db.node_type is node_config.NODE_TYPE_TEMPERATURE:
+                import temperature_measurement_node
 
-                    temperature_measurement_node.command(type, arguments)
+                temperature_measurement_node.command(type, arguments)
 
-            except Exception as e:
-                print("Invalid command")
-                print(e)
+        except Exception as e:
+            print("Invalid command")
+            print(e)
 
     while True:
         start_time = start = time.time()

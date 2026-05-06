@@ -10,7 +10,7 @@ K_p = 2**-1
 K_i = 2**-5
 K_d = 2**-4
 
-INTEGRAL_SAMPLES = 150
+INTEGRAL_SAMPLES = 4
 DEFAULT_TEMP = utils.f_to_c(70)
 target_temps = [DEFAULT_TEMP] * node_config.num_zones
 
@@ -25,18 +25,12 @@ def set_damper(zone, percent):
 
     servo = acturators.zone_servos[zone]
     x = percent / 100
-    _min = acturators.SERVO_MIN
-    _range = acturators.SERVO_RANGE
+    # _min = acturators.SERVO_MIN
+    # _range = acturators.SERVO_RANGE
 
-    if zone == 0:
-        _min = 35
-        _range = 100
-        x = 1 - x
-
-    if zone == 2:
-        _min = 35
-        _range = 100
-        x = 1 - x
+    _min = 35
+    _range = 100
+    x = 1 - x
 
     angle = _min + _range * x
     servo.angle = angle
